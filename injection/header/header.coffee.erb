@@ -57,6 +57,7 @@ window.UOMinjectHeader = ->
         header.appendChild n
 
     else
+			# The root breadcrumb
       if document.countSelector('.page-local-history .root') == 0
         rootlink = """
         <a href="https://unimelb.edu.au/" title="The University of Melbourne">The University of Melbourne</a>
@@ -65,6 +66,8 @@ window.UOMinjectHeader = ->
         rootlink = ""
 
       # General header
+			# The university logo
+			# This page-header-navigation means the full breadcrumb
       header.innerHTML = """
       <header>
         <a class="page-header-logo" href="#{defaultlink}">
@@ -83,6 +86,7 @@ window.UOMinjectHeader = ->
 
     local = document.querySelector('.page-local-history')
     if local
+			# Now we build the full breadcrumb in header
       navparent = document.querySelector('.page-header-navigation')
       local.parentNode.removeChild(local)
       if navparent
@@ -102,6 +106,7 @@ window.UOMinjectHeader = ->
   unless tools
     tools = document.createElement "div"
     tools.addClass('page-header-tools')
+		# Here we build the search, login modal and menu
     if document.countSelector('[role="main"].no-login') == 0
       tools.innerHTML = """
             <a class="page-header-icon" href="#sitemap" title="Search"><svg role="img"><use xlink:href="#icon-search"/></svg> Search</a><!--
