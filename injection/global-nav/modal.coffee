@@ -4,11 +4,19 @@ unless window.UOMModal
     blanket = document.querySelector('.modal__blanket')
     unless blanket
       blanket = document.createElement 'div'
+			# modal__blanket is the grey cover, like jquery gallery
       blanket.setAttribute('class', 'modal__blanket')
       document.querySelector('.uomcontent').appendChild blanket
 
     # Move modal dialogs to document root
     parent = document.querySelector('.uomcontent')
+		# Good example is login link in menu uses modal__dialog
+
+		# Test
+		# So for coffee, I always needs to use space, instead of tab??
+    #myDialog = document.querySelectorAll('.modal__dialog')[0]
+    #console.log(myDialog.parentNode)
+
     for modal in document.querySelectorAll('.modal__dialog')
       modal.parentNode.removeChild(modal)
       parent.appendChild modal

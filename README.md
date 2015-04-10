@@ -25,4 +25,8 @@ Setup a `.env` with the following keys:
 Run the following command:
 
     bundle exec rake assets:deploy VERSION=...
+		
+If you want to compile the source for uom.js for example, you can do
+
+		bundle exec rake assets:compile VERSION=0.8
 

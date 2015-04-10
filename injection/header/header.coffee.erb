@@ -1,14 +1,20 @@
 window.UOMinjectHeader = ->
-  # IE helper
+	# The navigator contains browser version, name, cookie, languages, etc, use it wisely. 
   bodyclass = 'ie ie8' if /(MSIE 8.0)/g.test(navigator.userAgent)
   bodyclass = 'ie ie9' if /(MSIE 9.0)/g.test(navigator.userAgent)
   bodyclass = 'ie ie10' if /(MSIE 10.0)/g.test(navigator.userAgent)
+
+	# If it is ie 8, 9, 10, css style is different.
   unless document.body.hasClass('ie') or (typeof bodyclass == 'undefined')
     document.body.addClass(bodyclass)
 
   # Logo links to
   defaultlink = 'https://www.unimelb.edu.au'
 
+	# http://stackoverflow.com/questions/14457084/getting-ruby-environment-variables-from-rake
+	# So in command line, you can set ASSET_ENV=development, then here it can pick it up.
+	# 
+	# assethost is like all the images, javascirpt files, etc??
   if "<%=ENV['ASSET_ENV']%>" == 'development'
     assethost = '/assets/shared'
   else
@@ -17,15 +23,54 @@ window.UOMinjectHeader = ->
   # Create page wrapper if it doesn't already exist
   parent = document.querySelector('.uomcontent')
   unless parent
+		# If there is no .uomcontent, build it.
+		# Coding style here is do, unless, initialize
     parent = document.createElement('div')
     parent.addClass('uomcontent')
+		# So body --> <div class="uomcomtent"></div>
     document.body.appendChild parent
 
+		# For example, document.body.childNodes: for childNodes
+		# 0: text (like separator)
+		# 1: <div class="uomcontent"></div>
+		# 2: text (like separator)
+		# 3: <div class="whatever"></div>
+		# 
+		# body --> <div class="uomcomtent"></div> make sure everything is inside uomcontent
     for n in document.body.childNodes
       if n and n != parent
         document.body.removeChild(n)
         parent.appendChild(n)
 
+	#
+	#
+	# div.uomcontent
+	#		div.page-header
+	#			header
+	#				uom-logo (svg)
+	#				div.page-header-navigation
+	#					div.page-local-history
+	#						breadcrumb
+	#			div.page-header-tools
+	#				search
+	#				login
+	#				menu			
+	#		div.page-inner
+	#			div.role=main
+	#				content
+	#			div.page-footer
+	#			div.hidden
+	#				all svg images
+	#		div.modal__blanket (i.e. overlay)
+	#		div.modal__dialog for uom-login
+	#		div.role="navigation"
+	#		div.sitemap-label
+	#		div.role="sitemap"
+	#			the long sitemap within menu
+	#	script: google tag manager			
+	#	script: hidden lp submit div????
+	#
+	#
   page = document.querySelector('.page-inner')
   unless page
     page = document.createElement('div')
@@ -38,8 +83,12 @@ window.UOMinjectHeader = ->
     header = document.createElement('div')
     header.addClass('page-header')
 
+		# Normally this is the home page. which means no white strip on the very top
+		# Otherwise, has white strip
+		#
+		# what is floating??
+		# 
     if document.countSelector('.page-inner > .floating') == 1
-      # Landing page header
       header.innerHTML = """
       <a class="page-header-logo" href="#{defaultlink}">
         <svg width="100" height="100" viewBox="0 0 140 140" aria-labelledby="aria-uom-title" role="img">
@@ -57,6 +106,9 @@ window.UOMinjectHeader = ->
         header.appendChild n
 
     else
+			# div.page-local-history
+			#		<a class="root">.....
+			# basically, it is building the root uom home breadcrumb url.	
       if document.countSelector('.page-local-history .root') == 0
         rootlink = """
         <a href="https://unimelb.edu.au/" title="The University of Melbourne">The University of Melbourne</a>
@@ -64,7 +116,8 @@ window.UOMinjectHeader = ->
       else
         rootlink = ""
 
-      # General header
+			# So this is under the else statement,
+			# Basically, it wrap uom-logo, breadcrumb, white strip within <header>
       header.innerHTML = """
       <header>
         <a class="page-header-logo" href="#{defaultlink}">
@@ -79,13 +132,19 @@ window.UOMinjectHeader = ->
       </header>
       """
 
+		# div.page-header
+		#		div.page-inner
+		#
     parent.insertBefore(header, page)
 
+		# div.page-header-navigation
+		#		div.page-local-history	
     local = document.querySelector('.page-local-history')
     if local
       navparent = document.querySelector('.page-header-navigation')
       local.parentNode.removeChild(local)
       if navparent
+				# If it is a sub page, we build root_link / sub_link 
         if rootlink != ""
           sep = document.createElement "span"
           sep.innerHTML = "/"
@@ -102,6 +161,7 @@ window.UOMinjectHeader = ->
   unless tools
     tools = document.createElement "div"
     tools.addClass('page-header-tools')
+		# Search, login modal and menu (3 items)
     if document.countSelector('[role="main"].no-login') == 0
       tools.innerHTML = """
             <a class="page-header-icon" href="#sitemap" title="Search"><svg role="img"><use xlink:href="#icon-search"/></svg> Search</a><!--
@@ -109,19 +169,23 @@ window.UOMinjectHeader = ->
             --><a class="page-header-icon" href="#sitemap" title="Menu"><svg role="img"><use xlink:href="#icon-menu"/></svg> Menu</a>
       """
     else
+			# Search and menu only, why??
       tools.innerHTML = """
             <a class="page-header-icon" href="#sitemap" title="Search"><svg role="img"><use xlink:href="#icon-search" /></svg> Search</a><!--
             --><a class="page-header-icon" href="#sitemap" title="Menu"><svg role="img"><use xlink:href="#icon-menu" /></svg> Menu</a>
       """
 
+		# Header is page header
     header.appendChild tools
 
     window.addEventListener "scroll", ->
+			# So firefox and IE
       if /(Firefox)/g.test(navigator.userAgent) or /(Trident)/g.test(navigator.userAgent)
         outer = document.querySelector('html')
       else
         outer = document.body
 
+			# So here it is when scroll with scroll bar, the header will become smaller and stick to top.
       if outer.scrollTop > 40
         header.addClass 'fixed'
       else
