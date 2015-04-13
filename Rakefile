@@ -1,3 +1,6 @@
+# Gary: test
+require 'pry'
+
 require 'rubygems' unless defined?(Gem)
 require 'rake/sprocketstask'
 require 'compass'
@@ -34,6 +37,10 @@ namespace :injection do
 
   Rake::SprocketsTask.new(:assets) do |t|
     t.environment = Sprockets::Environment.new do |e|
+			
+			# Gary: test
+			#binding.pry
+
 			# Gary: so I can debug javascript
 			# If I comment out e.js_compressor, it will compress the injection.js, bug???? 
       #e.js_compressor  = :uglify
@@ -44,6 +51,7 @@ namespace :injection do
         include InjectionHelper
       end
     end
+
     AutoprefixerRails.install(t.environment)
     t.output      = INJECTION_BUILD_DIR
     t.assets      = %w{*.svg *.png *.jpg *.jpeg injection.js injection.css}

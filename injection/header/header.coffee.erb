@@ -1,5 +1,5 @@
 window.UOMinjectHeader = ->
-	# The navigator contains browser version, name, cookie, languages, etc, use it wisely. 
+	# The navigator contains browser version, name, cookie, languages, etc, use it wisely.
   bodyclass = 'ie ie8' if /(MSIE 8.0)/g.test(navigator.userAgent)
   bodyclass = 'ie ie9' if /(MSIE 9.0)/g.test(navigator.userAgent)
   bodyclass = 'ie ie10' if /(MSIE 10.0)/g.test(navigator.userAgent)
@@ -132,8 +132,9 @@ window.UOMinjectHeader = ->
       </header>
       """
 
-		# div.page-header
-		#		div.page-inner
+		#	div.uomcontent
+		#		div.page-header
+		#			div.page-inner
 		#
     parent.insertBefore(header, page)
 
@@ -162,6 +163,7 @@ window.UOMinjectHeader = ->
     tools = document.createElement "div"
     tools.addClass('page-header-tools')
 		# Search, login modal and menu (3 items)
+		# [role="main"].no-login, you don't have to have login modal
     if document.countSelector('[role="main"].no-login') == 0
       tools.innerHTML = """
             <a class="page-header-icon" href="#sitemap" title="Search"><svg role="img"><use xlink:href="#icon-search"/></svg> Search</a><!--
@@ -191,6 +193,7 @@ window.UOMinjectHeader = ->
       else
         header.removeClass 'fixed'
 
+	# header is div.page-header, with role='banner'
   header.setAttribute('role', 'banner')
 
   main = document.querySelector('[role="main"]')
@@ -198,23 +201,40 @@ window.UOMinjectHeader = ->
     main = document.createElement('div')
     main.setAttribute('role', 'main')
   else
+		# Deattach main, basically make it clean and restructure.
     main.parentNode.removeChild(main)
 
   footer = document.querySelector('.page-footer')
+	
+	# div.page-inner
+	#		div.main
+	#		div.page-footer
   page.insertBefore(main, footer)
 
+	# Sitemap is the local site navigation we set
   sitemap = document.querySelector('[role="sitemap"]')
+
+	# div.uomcontent
+	#		div.page-header
+	#		div.page-inner
+	#		div.sitemap
+	#
+	# Basically, move everything else into div.main
   for n in parent.childNodes
     if n and n != page and n != sitemap and n != header
       parent.removeChild(n)
       main.appendChild(n)
 
-  parent.appendChild page
+	# Gary: test
+	# https://developer.mozilla.org/en-US/docs/Web/API/Node/appendChild
+	# page already exists, so move it and insert at the end of div.uomcontent
+ 	parent.appendChild page
 
   # Set up login modal and attach to page
   login = document.querySelector('.page-login')
   unless login
     if document.countSelector('[role="main"].no-login') == 0
+			# Either a student login or staff login.
       login = document.createElement "div"
       login.addClass('modal__dialog')
       login.addClass('page-login')

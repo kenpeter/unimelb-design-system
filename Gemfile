@@ -20,6 +20,11 @@ gem "pygments.rb", "~> 0.5.4"
 gem "front_matter_parser", "~> 0.0.2"
 gem "thin", "~> 1.6.2"
 
+# Gary
+# http://www.snowcrash.eu/loaderror-cannot-load-such-file-pry/
+gem "pry", "~> 0.10.1"
+gem "pry-byebug", "~> 3.1.0"
+
 group :development do
   gem "uglifier", "~> 2.5.0"
   gem "rake", "~> 10.3.2"
