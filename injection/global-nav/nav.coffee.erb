@@ -12,6 +12,9 @@ window.UOMinjectGlobalNav = ->
       @setupEvents()
 
     setupEvents: ->
+      ###
+      t = this, uomcontent
+      ###
       t = this
       if document.countSelector('.uomcontent div[role="navigation"]') == 1
         @localnav = document.querySelector('.uomcontent div[role="navigation"]')
@@ -55,11 +58,48 @@ window.UOMinjectGlobalNav = ->
             t.localnav.toggleClass 'active'
             t.header.toggleClass 'active'
 
-        # After clicking the menu on the top right, there is a little side uom menu label on the very right.
+        ###
+        After clicking the menu on the top right, there is a little side uom menu label on the very right.
+
+        toggleClass means remove or add.
+
+        global-activ
+        .page-inner.global-active {
+          -ms-transform: translate3d(-100%, 0, 0);
+          -webkit-transform: translate3d(-100%, 0, 0);
+          transform: translate3d(-100%, 0, 0);
+          -webkit-transition: -webkit-transform .3s ease;
+          transition: transform .3s ease;
+          position: fixed;
+          top: 0;
+          width: 100%; 
+        }
+
+        active
+        .page-inner.active {
+          -ms-transform: translate3d(-100%, 0, 0);
+          -webkit-transform: translate3d(-100%, 0, 0);
+          transform: translate3d(-100%, 0, 0);
+          -webkit-transition: -webkit-transform .3s ease;
+          transition: transform .3s ease;
+          overflow: hidden;
+          position: fixed;
+          top: 0;
+          width: 100%;
+          z-index: 10; ===========>
+        } 
+        ###
         @trigger.addEventListener 'click', (e) ->
           e.preventDefault()
           t.blanket.addClass 'on'
+          
+          ###
+          global-active vs active
+          gloval-active is z-index default, so it is behind.
+          active z-index = 10, so it is front.
+          ###
           t.trigger.addClass 'active'
+
           t.page.addClass 'global-active'
           t.header.addClass 'global-active'
           t.localnav.removeClass 'active'
