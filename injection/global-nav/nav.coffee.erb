@@ -17,7 +17,9 @@ window.UOMinjectGlobalNav = ->
         @localnav = document.querySelector('.uomcontent div[role="navigation"]')
         @localsitemaptrigger = @localnav.querySelector('.sitemap-link')
 
-				# The actual menu on the top right, you can click.
+        # The actual menu on the top right, you can click.
+        # more testing here??
+        # testing??
         @menutrigger.addEventListener 'click', (e) ->
           e.preventDefault()
           t.blanket.toggleClass 'on'
@@ -32,7 +34,7 @@ window.UOMinjectGlobalNav = ->
           t.header.removeClass 'fixed'
           t.header.toggleClass 'active'
 
-				# The nav you defined, the first h2
+        # The nav you defined, the first h2
         @localnav.querySelector('h2:first-child').addEventListener 'click', (e) ->
           e.preventDefault()
           if t.page.hasClass 'global-active'
@@ -53,7 +55,7 @@ window.UOMinjectGlobalNav = ->
             t.localnav.toggleClass 'active'
             t.header.toggleClass 'active'
 
-				# After clicking the menu on the top right, there is a little side uom menu label on the very right.
+        # After clicking the menu on the top right, there is a little side uom menu label on the very right.
         @trigger.addEventListener 'click', (e) ->
           e.preventDefault()
           t.blanket.addClass 'on'
@@ -64,7 +66,7 @@ window.UOMinjectGlobalNav = ->
           t.localnav.addClass 'global-active'
           t.sitemap.toggleClass 'active'
 
-				# The close button, after expanding the site-map within the big menu.
+        # The close button, after expanding the site-map within the big menu.
         @sitemap.querySelector('.close-button').addEventListener 'click', (e) ->
           e.preventDefault()
           t.page.removeClass 'global-active'
@@ -77,7 +79,7 @@ window.UOMinjectGlobalNav = ->
           t.localnav.addClass 'active'
           t.sitemap.removeClass 'active'
 
-				# sitemap-link, the 'browse university' button, under the user defined nav 
+        # sitemap-link, the 'browse university' button, under the user defined nav 
         @localsitemaptrigger.addEventListener 'click', (e) ->
           e.preventDefault()
           t.trigger.addClass 'active'
@@ -88,7 +90,7 @@ window.UOMinjectGlobalNav = ->
           t.sitemap.toggleClass 'active'
 
       else
-				# Only has the top menu
+        # Only has the top menu
         @menutrigger.addEventListener 'click', (e) ->
           e.preventDefault()
           t.blanket.toggleClass 'on'
@@ -97,7 +99,7 @@ window.UOMinjectGlobalNav = ->
           t.header.toggleClass 'global-active'
           t.sitemap.toggleClass 'active'
 
-				# The close button
+        # The close button
         @sitemap.querySelector('.close-button').addEventListener 'click', (e) ->
           e.preventDefault()
           t.blanket.removeClass 'on'
@@ -106,7 +108,7 @@ window.UOMinjectGlobalNav = ->
           t.header.toggleClass 'global-active'
           t.sitemap.toggleClass 'active'
 
-			# The blanket is the model, like jquery gallery 
+      # The blanket is the model, like jquery gallery 
       @blanket.addEventListener 'click', (e) ->
         e.preventDefault()
         t.blanket.removeClass 'on'
@@ -136,7 +138,7 @@ window.UOMinjectGlobalNav = ->
             t.sitemap.querySelector('input[type="search"]').focus()
 
   # Move local nav outside page container
-  # Here we build the actual local nav menu
+  # Here we build the actual local nav menu: sitemap
   if document.countSelector('.uomcontent div[role="navigation"]') == 1
     localnav = document.querySelector('.uomcontent div[role="navigation"]')
     rootmenu = localnav.querySelector('ul')
@@ -148,6 +150,13 @@ window.UOMinjectGlobalNav = ->
     # Strip trailing slash
     # absroot = absroot.substr(0, absroot.length-1) if absroot.charAt(absroot.length-1) == '/'
 
+    ###
+      ul
+        close button
+        <h2>whatever title</h2>
+        local menu
+        Browse University link
+    ###
     navtitle = localnav.querySelector('h2')
     firstli = document.createElement 'li'
     firstli.addClass 'home'
@@ -163,37 +172,122 @@ window.UOMinjectGlobalNav = ->
     localnav.removeClass('no-js')
     document.querySelector('.uomcontent').appendChild(localnav)
 
-    for group in localnav.querySelectorAll('a')
 
+    # It graps all the <a>, every <a>
+    for group in localnav.querySelectorAll('a')
       elements = []
+      ###
+      # <li>
+      #   <a>
+      #   <div class="inner">........</div>
+      #
+      #   so group is <a>, then group.parentNode is <li>, then group.parentNode.childNodes
+      #   are <a> & <div class="inner">
+      ###
       for node in group.parentNode.childNodes
+        # Ignore the head "H2" and bottom "browse university", push all <a> 
         if node.nodeType==1 and !node.hasClass('sitemap-link') and node.nodeName != 'H2'
           elements.push node
 
       if elements.length > 1
+        # Looking at <div class="inner">
         childgroup = elements[1]
 
+        ###
+        Build a back button
+        <ul>
+          <li>
+            <a href="#">link 1.1</a> === group
+            <div class="inner"> === childgroup
+              <span class="back">link 1.1</span> === childgroup.firstChild 
+              <ul>
+                <li><a href="#">link 1.1.1</a></li>
+              </ul>
+            </div>  
+          </li>
+        </ul>
+        ###
         back = document.createElement 'span'
         back.addClass 'back'
         back.innerHTML = group.firstChild.data
         childgroup.insertBefore(back, childgroup.firstChild)
 
+        # This is the back button
         childgroup.firstChild.addEventListener 'click', (e) ->
           e.preventDefault()
+          ###
+          <div class="inner hide active"> === this.parentNode
+            <span class="back">link 1.1</span> === this 
+              <ul>
+                <li><a href="#">link 1.1.1</a></li>
+              </ul>
+          </div>
+          ###
           this.parentNode.toggleClass 'hide'
           this.parentNode.toggleClass 'active'
 
+        ###
+        Default, only show <a class="parent"> 
+        <ul>
+          <li>
+            <a href="#" class="parent">link 1.1</a> === group
+            <div class="inner" class="hide"> === childgroup
+              <span class="back">link 1.1</span> === childgroup.firstChild 
+              <ul>
+                <li><a href="#">link 1.1.1</a></li>
+              </ul>
+            </div>  
+          </li>
+        </ul>
+        ###
         group.addClass('parent')
         childgroup.addClass('hide')
-        
-        # Actual nav link hide show
+       
+        ###
+        <ul>
+          <li> === this.parentNode
+            <a href="#" class="parent">link 1.1</a> === this 
+            <div class="inner" class="hide active"> === this.parentNode.querySelector('div')
+              <span class="back">link 1.1</span>
+              <ul>
+                <li><a href="#">link 1.1.1</a></li>
+              </ul>
+            </div>  
+          </li>
+        </ul>
+        ###
+
+        ###
+          what is class hide?
+          .uomcontent [role="navigation"] .inner.hide {
+            -ms-transform: translate3d(100%, 0, 0);
+            -webkit-transform: translate3d(100%, 0, 0);
+            transform: translate3d(100%, 0, 0);
+            -webkit-transition: -webkit-transform .3s ease;
+            transition: transform .3s ease;
+            z-index: 1; 
+          } 
+        ###
+
+        ###
+          what is class acive?
+          .uomcontent [role="navigation"].active {
+            right: 0;
+            -webkit-transition: right 0.25s ease;
+            transition: right 0.25s ease;
+            z-index: 15; 
+          }
+        ###
         group.addEventListener 'click', (e) ->
           e.preventDefault()
           this.parentNode.querySelector('div').toggleClass 'hide'
           this.parentNode.querySelector('div').toggleClass 'active'
+
+          # localnav is the navigation we made
+          # scrollTop, means stick to the top always.
           localnav.scrollTop = 0
 
-  # Create global nav trigger
+  # The horizontal nav button next to the div.sitemap 
   trigger = document.querySelector('div.sitemap-label')
   unless trigger
     trigger = document.createElement('div')
@@ -203,7 +297,9 @@ window.UOMinjectGlobalNav = ->
     """
     document.querySelector('.uomcontent').appendChild(trigger)
 
-  # Create global nav
+
+  # The big giant blue sitemap cross 98% of the page.
+  # nav !=== localnav 
   nav = document.querySelector('[role="sitemap"]')
   unless nav
 
@@ -314,6 +410,7 @@ window.UOMinjectGlobalNav = ->
       </div>
     """
 
+    # It is looking for the big giant sitemap's search form
     form = nav.querySelector('form')
 
     if /(MSIE [8|9].0)/g.test(navigator.userAgent)
@@ -321,6 +418,18 @@ window.UOMinjectGlobalNav = ->
       form.elements[1].addEventListener 'click', (e) ->
         this.select()
 
+    ###
+      <form action="https://search.unimelb.edu.au" method="get"> === this
+        <fieldset>
+          <input data-required="" placeholder="Search" name="q" type="search" title="Please enter a keyword" aria-label="Search the University">
+          <button type="submit" value="Go" class="search-button"><svg role="img"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-search"></use></svg></button>
+          </fieldset>
+      </form>
+
+      this.action === "https://search.unimelb.edu.au"
+      this.elements === fieldset, input, button
+      this.elements[1] === input
+    ###
     form.addEventListener 'submit', (e) ->
       e.preventDefault()
       window.location = this.action + "#gsc.q=" + this.elements[1].value

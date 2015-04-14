@@ -9,7 +9,7 @@
 window.UOMloadInjection = function() {
   window.UOMinjectHeader(); // Each of them in individual directory
   window.UOMModal()
-  window.UOMinjectGlobalNav();
+  window.UOMinjectGlobalNav(); // This contains many listeners 
   window.UOMinjectFooter();
   window.UOMinjectIcons();
 };
