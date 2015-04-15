@@ -6,12 +6,15 @@
 //= require ./footer/icons
 //= require ./tracking/gtm
 
+
 window.UOMloadInjection = function() {
   window.UOMinjectHeader(); // Each of them in individual directory
   window.UOMModal()
   window.UOMinjectGlobalNav(); // This contains many listeners 
-  window.UOMinjectFooter();
+  window.UOMinjectFooter(); // footer and icon sitting at footer
   window.UOMinjectIcons();
+
+  // There is google tag manager tracking
 };
 
 // So this is the entry point.

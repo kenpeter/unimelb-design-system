@@ -1,5 +1,8 @@
 window.UOMinjectFooter = ->
   # Only inject footer if it doesn't already exist
+  ###
+  Big blue boring footer
+  ###
   footer = document.querySelector('.page-footer')
   unless footer
     if "<%=ENV["ASSET_ENV"]%>" == 'development'
