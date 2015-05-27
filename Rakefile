@@ -35,8 +35,8 @@ namespace :injection do
 
   Rake::SprocketsTask.new(:assets) do |t|
     t.environment = Sprockets::Environment.new do |e|
-      #e.js_compressor  = :uglify
-      #e.css_compressor = :scss
+      e.js_compressor  = :uglify
+      e.css_compressor = :scss
       e.append_path File.join(Gem.loaded_specs['compass-core'].full_gem_path, 'stylesheets')
       e.append_path INJECTION_ASSETS
       e.context_class.class_eval do
@@ -71,8 +71,8 @@ namespace :templates do
 
   Rake::SprocketsTask.new(:assets) do |t|
     t.environment = Sprockets::Environment.new do |e|
-      #e.js_compressor  = :uglify
-      #e.css_compressor = :scss
+      e.js_compressor  = :uglify
+      e.css_compressor = :scss
       e.append_path File.join(Gem.loaded_specs['compass-core'].full_gem_path, 'stylesheets')
       e.append_path TEMPLATES_ASSETS
       e.context_class.class_eval do

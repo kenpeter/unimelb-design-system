@@ -5,3 +5,4 @@ tmp/*
 .env
 .ruby-version
 .idea
+*manifest-*
