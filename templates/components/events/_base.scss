@@ -1,10 +1,61 @@
+%presenters {
+  margin: 0 3%;
+  width: 94%;
+
+  strong {
+    @include rem(font-size, 16px);
+    @include rem(padding, 15px 0 5px);
+    display: block;
+    font-weight: $regular;
+  }
+
+  a {
+    @include rem(font-size, 14px);
+    @include rem(padding-right, 10px);
+    color: $lighterblue;
+    display: inline-block;
+    vertical-align: top;
+    width: 50%;
+
+    &:hover {
+      color: darken($lighterblue, 10%);
+      text-decoration: underline;
+    }
+  }
+
+  @include breakpoint(desktop) {
+    margin-left: 0;
+  }
+
+  @include breakpoint(wide) {
+    @include rem(padding-left, 15px);
+    border-left: 1px solid darken($lightgray, 5%);
+    display: table-cell;
+    vertical-align: top;
+    width: 30%;
+
+    strong {
+      padding-top: 0;
+    }
+  }
+}
+
 .uomcontent [role="main"] ul.event-listing {
   @include rem(max-width, $w-lge);
   padding: 0;
 
+  @include breakpoint(desktop) {
+    @include rem(border-spacing, 30px);
+    display: table;
+  }
+
   a {
     color: $black;
     text-decoration: none;
+
+    &:hover {
+      color: $highlight;
+    }
   }
 
   li {
@@ -20,15 +71,17 @@
     width: 100%;
 
     @include breakpoint(desktop) {
-      display: table;
+      display: table-row;
       padding-left: 0;
     }
 
     li {
-      @include rem(padding-top, 45px);
+      border-bottom: 1px solid darken($lightgray, 5%);
       @include rem(border-left, 5px solid $lighterblue);
+      @include rem(margin-left, -15px);
+      @include rem(padding-bottom, 20px);
+      @include rem(padding-top, 20px);
       margin-bottom: 0;
-      margin-left: 0;
       padding-left: 0;
       width: auto;
 
@@ -36,16 +89,23 @@
         padding-top: 0;
       }
 
+      &:last-child {
+        border-bottom: 0;
+      }
+
       @include breakpoint(desktop) {
         @include rem(padding-left, 15px);
         border-left: 0 none;
+        border-spacing: 0;
+        display: list-item;
+        padding-left: 0;
       }
     }
   }
 
   p {
     @include rem(padding-bottom, 5px);
-    max-width: 100%;
+
   }
 
   h2 {
@@ -73,6 +133,7 @@
       display: table-cell;
       line-height: 1;
       margin-right: 0;
+      padding-left: 0;
       text-align: right;
       vertical-align: top;
       width: auto;
@@ -97,10 +158,11 @@
 
   ul {
     max-width: 100%;
-    padding: 0;
 
     @include breakpoint(desktop) {
       display: table-cell;
+      margin: 0;
+      padding: 0;
     }
   }
 
@@ -109,6 +171,7 @@
     @include rem(padding-bottom, 10px);
     font-weight: $light;
     line-height: 1.3;
+    max-width: 100%;
 
     @include breakpoint(desktop) {
       margin-left: 0;
@@ -116,12 +179,20 @@
   }
 
   .time {
-    @include rem(padding-bottom, 10px);
     color: $lighterblue;
     display: block;
     font-weight: $regular;
     margin: 0 3%;
     width: 94%;
+
+    svg {
+      @include rem(height, 20px);
+      @include rem(margin-top, -4px);
+      @include rem(width, 20px);
+      display: inline-block;
+      fill: $highlight;
+      vertical-align: middle;
+    }
 
     @include breakpoint(desktop) {
       margin-left: 0;
@@ -155,6 +226,32 @@
       }
     }
 
+    .tag {
+      @include adjust-font-size-to(11px);
+      @include rem(border-radius, 3px);
+      @include rem(margin-right, 10px);
+      @include rem(padding, 0 7px 0 3px);
+      border: 1px solid $midgray;
+      //background-color: $lightblue;
+      color: $midgray;
+      display: inline-block;
+      font-weight: $regular;
+      text-transform: uppercase;
+
+      svg {
+        fill: $midgray;
+      }
+    }
+
+    svg {
+      @include rem(height, 18px);
+      @include rem(margin-top, -3px);
+      @include rem(width, 18px);
+      display: inline-block;
+      fill: $midgray;
+      vertical-align: middle;
+    }
+
     @include breakpoint(desktop) {
       border-bottom: 0 none;
       border-top: 0 none;
@@ -165,6 +262,10 @@
   }
 
   .col {
+    p {
+      max-width: 100%;
+    }
+
     @include breakpoint(wide) {
       @include rem(padding-right, 15px);
       display: table-cell;
@@ -173,45 +274,7 @@
   }
 
   .presenters {
-    margin: 0 3%;
-    width: 94%;
-
-    strong {
-      @include rem(font-size, 16px);
-      @include rem(padding, 15px 0 5px);
-      display: block;
-      font-weight: $regular;
-    }
-
-    a {
-      @include rem(font-size, 14px);
-      @include rem(padding-right, 10px);
-      color: $lighterblue;
-      display: inline-block;
-      vertical-align: top;
-      width: 50%;
-
-      &:hover {
-        color: darken($lighterblue, 10%);
-        text-decoration: underline;
-      }
-    }
-
-    @include breakpoint(desktop) {
-      margin-left: 0;
-    }
-
-    @include breakpoint(wide) {
-      @include rem(padding-left, 15px);
-      border-left: 1px solid darken($lightgray, 5%);
-      display: table-cell;
-      vertical-align: top;
-      width: 30%;
-
-      strong {
-        padding-top: 0;
-      }
-    }
+    @extend %presenters;
   }
 }
 

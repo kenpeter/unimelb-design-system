@@ -2,6 +2,7 @@ require 'rubygems' unless defined?(Gem)
 require 'rake/sprocketstask'
 require 'compass'
 require 'autoprefixer-rails'
+require 'securerandom'
 
 ROOT_DIR  = File.expand_path File.dirname(__FILE__)
 BUILD_DIR = File.expand_path File.join(ROOT_DIR,  'build')
@@ -100,4 +101,8 @@ namespace :assets do
 
   desc 'Compile all assets'
   task compile: ['assets:version_check', 'templates:assets', 'injection:assets']
+end
+
+task :default do
+  # TODO js tests, visual diff
 end
