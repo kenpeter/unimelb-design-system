@@ -1,2 +1,4 @@
 rm ./build -rf
-bundle exec rake assets:compile VERSION=0.8
+
+# http://stackoverflow.com/questions/6588674/what-does-bundle-exec-rake-mean
+bundle exec rake assets:compile VERSION=latest
