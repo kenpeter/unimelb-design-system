@@ -35,9 +35,7 @@ namespace :injection do
 
   Rake::SprocketsTask.new(:assets) do |t|
     t.environment = Sprockets::Environment.new do |e|
-			# Gary: so I can debug javascript
-			# If I comment out e.js_compressor, it will compress the injection.js, bug???? 
-      #e.js_compressor  = :uglify
+      e.js_compressor  = :uglify
       e.css_compressor = :scss
       e.append_path File.join(Gem.loaded_specs['compass-core'].full_gem_path, 'stylesheets')
       e.append_path INJECTION_ASSETS
@@ -73,8 +71,7 @@ namespace :templates do
 
   Rake::SprocketsTask.new(:assets) do |t|
     t.environment = Sprockets::Environment.new do |e|
-			# Gary: so I can debug javascript
-      #e.js_compressor  = :uglify
+      e.js_compressor  = :uglify
       e.css_compressor = :scss
       e.append_path File.join(Gem.loaded_specs['compass-core'].full_gem_path, 'stylesheets')
       e.append_path TEMPLATES_ASSETS

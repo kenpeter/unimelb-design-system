@@ -1,3 +1,4 @@
+// Polyfill, helper func, hack.....
 var supportedmodernbrowser = !/(MSIE 7.0)/g.test(navigator.userAgent);
 
 (function() {

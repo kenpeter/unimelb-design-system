@@ -2,6 +2,8 @@ unless window.UOMValid
   window.UOMValid = ->
     class Valid
       constructor: (@el) ->
+        # @el can be form or whatever element has data-validate
+        
         @patterns =
           alpha: /[a-zA-Z]+/
           alpha_numeric : /[a-zA-Z0-9]+/
@@ -27,9 +29,14 @@ unless window.UOMValid
 
           # url: /(https?|ftp|file|ssh):\/\/(((([a-zA-Z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&\'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-zA-Z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-zA-Z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-zA-Z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-zA-Z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-zA-Z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-zA-Z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-zA-Z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-zA-Z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-zA-Z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&\'\(\)\*\+,;=]|:|@)+(\/(([a-zA-Z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&\'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-zA-Z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&\'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-zA-Z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&\'\(\)\*\+,;=]|:|@)|\/|\?)*)?/
 
+        # So set up error message for require or any passowrd, date, time, dateISO pattern attached to an input element etc.
         @setupMsg(f) for f in @el.querySelectorAll('[aria-required],[data-pattern]')
 
         t = this
+        ###
+        In the web.unimelb.edu.au example, data-validate is assign to <form> so, the form (the most outer element)
+        is listening to submit
+        ###
         @el.addEventListener 'submit', (e) ->
           invalid = 0
           target = e.target || e.srcElement
@@ -58,8 +65,17 @@ unless window.UOMValid
                     t.invalid(f)
                     invalid++
 
+            ###
+              t is the form, for example,
+              then f (f0, f1, f2, etc) are input elements under form, for example.
+              
+              data-pattern can apply to form or sub elements for example.
+            ###
             if f.hasAttribute('data-pattern')
               if t.patterns.hasOwnProperty(f.getAttribute 'data-pattern')
+                ###
+                  So it only support single pattern validation.
+                ###
                 re = new RegExp(t.patterns[f.getAttribute 'data-pattern'])
               else
                 re = new RegExp(f.getAttribute 'data-pattern')
@@ -67,6 +83,8 @@ unless window.UOMValid
                 t.valid(f)
               else
                 t.invalid(f)
+  
+                # So we keep track of invalids.
                 invalid++
 
           if invalid
@@ -88,12 +106,41 @@ unless window.UOMValid
           # Get the last wrapped checkbox in this node
           parent = parent.parentNode.querySelector(nameval).parentNode.parentNode.querySelector('div:last-child').querySelector(nameval).parentNode
 
+        ###
+          <div> ===> parent
+            <label class="password_label" data-required="true" for="f-password-2">Password: </label>
+            <input class="password_input" data-error="Please enter valid password." data-pattern="password" id="f-password-2" name="f[password]" type="text" />
+          </div>
+
+          NOTE: it assumes like this
+          
+          <div>
+            <label>
+            <input>
+
+          It may cause bug.
+        ###
         if parent.countSelector('small') == 0
           error = document.createElement 'small'
           if f.hasAttribute('data-error')
             error.appendChild document.createTextNode f.getAttribute('data-error')
           else
             error.appendChild document.createTextNode 'Required'
+
+          ###
+            Aggregate errors
+            
+            <div>
+              <label>
+              <input>  
+              <small>whatever input error message 1</small> ===> Newly added, here we display the error message
+            </div>
+            <div>
+              <label>
+              <textarea>
+              <small>whatever textarea error message 1</small>
+            </div>
+          ###
           parent.appendChild error
 
       invalid: (f) ->
@@ -115,6 +162,11 @@ unless window.UOMValid
         else
           if f.nodeName == 'SELECT'
             parent.parentNode.addClass('invalid')
+
+          ###
+            <div class="invalid">
+              <input class="invalid">
+          ###
           parent.addClass('invalid')
           f.addClass('invalid')
 
@@ -124,5 +176,20 @@ unless window.UOMValid
         f.parentNode.removeClass('invalid')
         f.removeClass('invalid')
 
+    ###
+      The uncompiled code is like:
+
+      if (supportedmodernbrowser) {
+        _ref = document.querySelectorAll("[data-validate]");
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          f = _ref[_i];
+          _results.push(new Valid(f));
+        }
+        return _results;
+      }
+
+      It seems _results try to aggregate them. 
+    ###
     if (supportedmodernbrowser)
       new Valid(f) for f in document.querySelectorAll("[data-validate]")
